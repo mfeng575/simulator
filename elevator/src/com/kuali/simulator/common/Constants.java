@@ -6,4 +6,5 @@ public interface Constants {
 	
 	public enum DIRECTION {UP, DOWN, NONE};
 	public enum ELEVATOR_STATE {IDLE, TRANSIT, LOADING};
+	public enum PASSENGER_STATE {WAIT, TRANSIT, DELIVERED};
 }

@@ -16,6 +16,7 @@ public class Elevator {
 	private int currentFloor = 1;
 	private Integer nextStop = null;
 	private int totalFloorsTravelled = 0;
+	private Integer ultimateHigh, ultimateLow = null;
 	private HashMap<Integer, List<Passenger>> stops = new HashMap<Integer, List<Passenger>>();
 	private DIRECTION movingDirection;
 	private ELEVATOR_STATE state;
@@ -131,6 +132,27 @@ public class Elevator {
 		
 		// this should not happen
 		throw new Exception ("Error in finding next stop");
+	}
+	
+	public void addPassenger(int floor, Passenger passenger) throws Exception
+	{
+		if(stops.containsKey(floor))
+		{
+			List<Passenger> passengers = stops.get(floor);
+			if(passenger != null) passengers.add(passenger);
+		}
+		else
+		{
+			List<Passenger> passengers = new ArrayList<Passenger>();
+			if(passenger != null) passengers.add(passenger);
+			stops.put(floor, passengers);
+		}
+		
+		if(ultimateHigh == null) ultimateHigh = floor;
+		else if(ultimateHigh < floor) ultimateHigh = floor;
+		
+		if(ultimateLow == null) ultimateLow = floor;
+		else if(ultimateLow > floor) ultimateLow = floor;
 	}
 	
 	public boolean underMaintenance()
