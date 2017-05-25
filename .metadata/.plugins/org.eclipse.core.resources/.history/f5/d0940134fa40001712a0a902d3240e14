@@ -44,8 +44,8 @@ public class Elevator {
 			
 			if(stops.contains(currentFloor))
 			{
-				// if this is the floor, then stop and open the door
 				state = ELEVATOR_STATE.LOADING;
+				// if this is the floor, then stop and open the door
 				
 				// TODO unload passengers
 				
@@ -55,12 +55,6 @@ public class Elevator {
 				stops.remove(currentFloor);
 				
 				Thread.sleep(Constants.timeOpenCloseDoor);
-				
-				// elevator should stop now
-				if(stops.isEmpty())
-				{
-					continue;
-				}
 			}
 			
 			//  TODO found the nearest stop and moving to that direction
@@ -77,15 +71,10 @@ public class Elevator {
 		}
 	}
 	
-	private Integer findNextStop() throws Exception
+	private Integer findNextStop()
 	{
-		// find the next stop
-		// if originally moving down and there's no stop below, then see if there's any stop requested above, if so change direction to up
-
-		// if originally moving up and there's no stop above, then see if there's any stop requested below, if so change direction to down
-		
-		// this should not happen
-		throw new Exception ("Error in finding next stop");
+		// find the nearest stop
+		return -1;
 	}
 	
 	public boolean underMaintenance()

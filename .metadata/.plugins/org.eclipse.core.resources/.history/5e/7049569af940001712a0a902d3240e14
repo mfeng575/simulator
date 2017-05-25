@@ -9,7 +9,7 @@ public class ElevatorController {
 	private int totalFloor = 1;
 	private List<Elevator> elevators = new ArrayList<Elevator>();
 	
-	public ElevatorController(int totalFloor, int totalElevator) throws Exception 
+	public ElevatorController(int totalFloor, int totalElevator) 
 	{
 		this.totalFloor = totalFloor;
 		

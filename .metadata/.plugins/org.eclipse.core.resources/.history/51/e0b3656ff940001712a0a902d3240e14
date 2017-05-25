@@ -1,8 +1,6 @@
 package com.kuali.simulator.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import com.kuali.simulator.common.Constants;
@@ -16,11 +14,11 @@ public class Elevator {
 	private int currentFloor = 1;
 	private Integer nextStop = null;
 	private int totalFloorsTravelled = 0;
-	private HashSet<Integer> stops = new HashSet<Integer>();
+	private List<Integer> stops = new ArrayList<Integer>();
 	private DIRECTION movingDirection;
 	private ELEVATOR_STATE state;
 	
-	public Elevator (String name, int initialFloor, ElevatorController controller) throws Exception
+	public Elevator (String name, int initialFloor, ElevatorController controller)
 	{
 		this.name = name;		
 		this.currentFloor = initialFloor;
@@ -28,7 +26,7 @@ public class Elevator {
 		run();
 	}
 	
-	private void run() throws Exception
+	private void run()
 	{
 		// simulate the elevator running
 		while(true)
@@ -42,10 +40,10 @@ public class Elevator {
 				continue;
 			}
 			
-			if(stops.contains(currentFloor))
+			if(stops.containsKey(currentFloor))
 			{
-				// if this is the floor, then stop and open the door
 				state = ELEVATOR_STATE.LOADING;
+				// if this is the floor, then stop and open the door
 				
 				// TODO unload passengers
 				
@@ -55,12 +53,6 @@ public class Elevator {
 				stops.remove(currentFloor);
 				
 				Thread.sleep(Constants.timeOpenCloseDoor);
-				
-				// elevator should stop now
-				if(stops.isEmpty())
-				{
-					continue;
-				}
 			}
 			
 			//  TODO found the nearest stop and moving to that direction
@@ -70,6 +62,8 @@ public class Elevator {
 			
 			state = ELEVATOR_STATE.TRANSIT;
 			Thread.sleep(Constants.timeMovingBetweenFloor);
+			currentFloor += movingDirection == DIRECTION.DOWN ? -1 : 1;
+			totalFloorsTravelled ++;
 			
 			// update current floor
 			currentFloor += movingDirection == DIRECTION.UP ? 1 : -1; 	
@@ -77,15 +71,10 @@ public class Elevator {
 		}
 	}
 	
-	private Integer findNextStop() throws Exception
+	private Integer findNextStop()
 	{
-		// find the next stop
-		// if originally moving down and there's no stop below, then see if there's any stop requested above, if so change direction to up
-
-		// if originally moving up and there's no stop above, then see if there's any stop requested below, if so change direction to down
-		
-		// this should not happen
-		throw new Exception ("Error in finding next stop");
+		// find the nearest stop
+		return -1;
 	}
 	
 	public boolean underMaintenance()
