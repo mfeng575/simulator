@@ -42,7 +42,7 @@ public class Elevator {
 				continue;
 			}
 			
-			if(stops.containsKey(currentFloor))
+			if(stops.contains(currentFloor))
 			{
 				// if this is the floor, then stop and open the door
 				state = ELEVATOR_STATE.LOADING;
@@ -80,52 +80,17 @@ public class Elevator {
 	private Integer findNextStop() throws Exception
 	{
 		// find the next stop
-		Integer nextStop = null;
-		
-		Integer nextStopDown = null;
-		Integer nextStopUp = null;
+		Integer nextStop = currentFloor;
 		
 		// if originally moving down and there's no stop below, then see if there's any stop requested above, if so change direction to up
-		if(movingDirection == DIRECTION.DOWN)
-		{
-			for(Integer stop : stops.keySet())
-			{
-				if(stop < currentFloor)
-				{
-					if(nextStopDown == null) nextStopDown = stop;
-					else if(stop > nextStopDown) nextStopDown = stop;
-				}
-				if(stop < currentFloor)
-				{
-					if(nextStopUp == null) nextStopUp = stop;
-					else if(stop > nextStopUp) nextStopUp = stop;
-				}
-			}
-			
-			if(nextStopDown != null) nextStop = nextStopDown;
-			else if(nextStopUp != null) nextStop = nextStopUp;
-		}
-
-		// if originally moving up and there's no stop above, then see if there's any stop requested below, if so change direction to down
 		if(movingDirection == DIRECTION.UP)
 		{
-			for(Integer stop : stops.keySet())
+			for(Object stop : stops.toArray())
 			{
-				if(stop < currentFloor)
-				{
-					if(nextStopDown == null) nextStopDown = stop;
-					else if(stop > nextStopDown) nextStopDown = stop;
-				}
-				if(stop < currentFloor)
-				{
-					if(nextStopUp == null) nextStopUp = stop;
-					else if(stop > nextStopUp) nextStopUp = stop;
-				}
+				
 			}
-			
-			if(nextStopUp != null) nextStop = nextStopUp;
-			else if(nextStopDown != null) nextStop = nextStopDown;
 		}
+		// if originally moving up and there's no stop above, then see if there's any stop requested below, if so change direction to down
 		
 		if(nextStop != null) return nextStop;
 		

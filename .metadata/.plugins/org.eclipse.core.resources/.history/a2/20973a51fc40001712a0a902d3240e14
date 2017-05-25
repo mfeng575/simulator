@@ -1,0 +1,5 @@
+package com.kuali.simulator.model;
+
+public class Passenger {
+
+}
