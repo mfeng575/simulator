@@ -178,7 +178,24 @@ public class Elevator {
 		
 		if(ultimateLow == null) ultimateLow = targetFloor;
 		else if(ultimateLow > targetFloor) ultimateLow = targetFloor;
-}
+	}
+	
+	public Double getRequestCandidateFactor(int requestFloor, Constants.DIRECTION reqeuestDirection) throws Exception
+	{
+		// to simply the algorithm, return the factor base-off the distance from the next hit of the target floor
+		
+		// if disabled then return null
+		
+		// TODO if idle, then calculate the distance as is
+		
+		// TODO if moving towards target floor
+		
+		// TODO if moving away from target floor
+		
+		// can't figure out ranking...not good
+		throw new Exception("unsupported use case");
+	}
+
 	
 	public boolean underMaintenance()
 	{

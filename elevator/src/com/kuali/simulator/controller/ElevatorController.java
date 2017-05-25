@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.kuali.simulator.common.Constants.DIRECTION;
 import com.kuali.simulator.common.Constants.PASSENGER_STATE;
 import com.kuali.simulator.model.Elevator;
 import com.kuali.simulator.model.Passenger;
@@ -35,7 +36,7 @@ public class ElevatorController {
 		}
 	}	
 	
-	private synchronized void processPassengers() 
+	private synchronized void processPassengers() throws Exception
 	{
 		// TODO remove all delivered passengers
 		Iterator<Passenger> iter = passengers.iterator();
@@ -46,10 +47,38 @@ public class ElevatorController {
             {
             	iter.remove();
             }
+            if(p.getState() == PASSENGER_STATE.WAIT)
+            {
+            	Elevator elevator = requestElevator(p);
+            	elevator.addPassenger(p.getInitialFloor(), p.getTargetFloor(), p);
+            }
         }
-        
-		// TODO request stops for all waiting passengers
+ 		
+	}
+	
+	private Elevator requestElevator(Passenger passenger) throws Exception
+	{
+		Double ranking = null;
+		Elevator chosenOne = null;
 		
+		for(Elevator elevator : elevators)
+		{
+			// find out ranking of elevators
+			Double newRanking = elevator.getRequestCandidateFactor(passenger.getInitialFloor(), 
+											   					   passenger.getTargetFloor() > passenger.getInitialFloor()? DIRECTION.UP : DIRECTION.DOWN);
+			if(ranking == null)
+			{
+				ranking = newRanking;
+				chosenOne = elevator;
+			}
+			if(ranking != null && newRanking < ranking)
+			{
+				ranking = newRanking;
+				chosenOne = elevator;
+			}		
+		}
+		
+		return chosenOne;
 	}
 	
 	public synchronized void updatePassengers(List<Passenger> passengers, PASSENGER_STATE origState, PASSENGER_STATE newState) 
