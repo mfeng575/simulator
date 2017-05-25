@@ -185,17 +185,47 @@ public class Elevator {
 		// to simply the algorithm, return the factor base-off the distance from the next hit of the target floor
 		
 		// if disabled then return null
+		if(underMaintenance()) return null;
 		
-		// TODO if idle, then calculate the distance as is
-		
+		// if idle, then calculate the distance as is
+		if(getState() == Constants.ELEVATOR_STATE.IDLE)
+		{
+			return getStaticDistance(requestFloor);
+		}
+	
 		// TODO if moving towards target floor
-		
+		if(   movingDirection == Constants.DIRECTION.DOWN 
+		   && reqeuestDirection == Constants.DIRECTION.DOWN
+		   && requestFloor <= currentFloor )				   
+		{
+			return getState() == Constants.ELEVATOR_STATE.LOADING ? getStaticDistance(requestFloor) : getMovingDistance(requestFloor);
+		}
+		if(   movingDirection == Constants.DIRECTION.UP 
+		   && reqeuestDirection == Constants.DIRECTION.UP
+		   && requestFloor >= currentFloor )			   
+		{
+			return getState() == Constants.ELEVATOR_STATE.LOADING ? getStaticDistance(requestFloor) : getMovingDistance(requestFloor);
+		}		
+			
 		// TODO if moving away from target floor
 		
 		// can't figure out ranking...not good
 		throw new Exception("unsupported use case");
 	}
 
+	private Double getStaticDistance(int requestFloor)
+	{
+		return Double.valueOf(Math.abs(currentFloor - requestFloor));
+	}
+
+	private Double getMovingDistance(int requestFloor)
+	{
+		return Double.valueOf(Math.abs(currentFloor - requestFloor)) - 0.5;
+	}
+
+	public ELEVATOR_STATE getState() {
+		return state;
+	}
 	
 	public boolean underMaintenance()
 	{
