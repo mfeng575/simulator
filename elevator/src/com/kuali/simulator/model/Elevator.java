@@ -51,10 +51,10 @@ public class Elevator {
 				// if this is the floor, then stop and open the door
 				state = ELEVATOR_STATE.LOADING;
 				
-				// TODO unload passengers
+				// unload passengers
 				controller.updatePassengers(stops.get(currentFloor), PASSENGER_STATE.TRANSIT, PASSENGER_STATE.DELIVERED);
 				
-				// TODO load passengers
+				// load passengers
 				controller.updatePassengers(stops.get(currentFloor), PASSENGER_STATE.ASSIGNED, PASSENGER_STATE.TRANSIT);
 				
 				// remove the stop
@@ -69,7 +69,7 @@ public class Elevator {
 				}
 			}
 			
-			//  TODO found the nearest stop and moving to that direction
+			//  found the nearest stop and moving to that direction
 			nextStop = findNextStop();
 			
 			movingDirection = nextStop > currentFloor ? DIRECTION.UP : DIRECTION.DOWN;
@@ -206,10 +206,51 @@ public class Elevator {
 		{
 			return getState() == Constants.ELEVATOR_STATE.LOADING ? getStaticDistance(requestFloor) : getMovingDistance(requestFloor);
 		}		
-			
-		// TODO if moving away from target floor
+		if(	  movingDirection == Constants.DIRECTION.DOWN 
+		   && reqeuestDirection == Constants.DIRECTION.UP
+		   && requestFloor <= ultimateLow )
+					   
+		{
+			return getState() == Constants.ELEVATOR_STATE.LOADING ? getStaticDistance(requestFloor) : getMovingDistance(requestFloor);
+		}		
+		if(	  movingDirection == Constants.DIRECTION.UP 
+		   && reqeuestDirection == Constants.DIRECTION.DOWN
+		   && requestFloor >= ultimateHigh )						   
+		{
+			return getState() == Constants.ELEVATOR_STATE.LOADING ? getStaticDistance(requestFloor) : getMovingDistance(requestFloor);
+		}		
 		
-		// can't figure out ranking...not good
+		// TODO if moving away from target floor
+		if(   movingDirection == Constants.DIRECTION.DOWN 
+			   && reqeuestDirection == Constants.DIRECTION.DOWN
+			   && requestFloor > currentFloor )
+				   
+		{
+			return getSnakeBackDistance(ultimateLow) + (getState() == Constants.ELEVATOR_STATE.LOADING ? getStaticDistance(requestFloor) : getMovingDistance(requestFloor));
+		}
+		if(   movingDirection == Constants.DIRECTION.UP 
+			   && reqeuestDirection == Constants.DIRECTION.UP
+			   && requestFloor < currentFloor )
+				   
+		{
+			return getSnakeBackDistance(ultimateHigh) + (getState() == Constants.ELEVATOR_STATE.LOADING ? getStaticDistance(requestFloor) : getMovingDistance(requestFloor));
+		}		
+		if(	  movingDirection == Constants.DIRECTION.DOWN 
+		   && reqeuestDirection == Constants.DIRECTION.UP
+		   && requestFloor > ultimateLow )
+					   
+		{
+			return getSnakeBackDistance(ultimateLow) + (getState() == Constants.ELEVATOR_STATE.LOADING ? getStaticDistance(requestFloor) : getMovingDistance(requestFloor));
+		}		
+		if(	  movingDirection == Constants.DIRECTION.UP 
+		   && reqeuestDirection == Constants.DIRECTION.DOWN
+		   && requestFloor < ultimateHigh )
+							   
+		{
+			return getSnakeBackDistance(ultimateHigh) + (getState() == Constants.ELEVATOR_STATE.LOADING ? getStaticDistance(requestFloor) : getMovingDistance(requestFloor));
+		}
+		
+		// running out of time to figure out what else is possible, so throw an exception so we can tell in unit testing
 		throw new Exception("unsupported use case");
 	}
 
@@ -221,6 +262,11 @@ public class Elevator {
 	private Double getMovingDistance(int requestFloor)
 	{
 		return Double.valueOf(Math.abs(currentFloor - requestFloor)) - 0.5;
+	}
+
+	private Double getSnakeBackDistance(int ultimateStop)
+	{
+		return 2 * Double.valueOf(Math.abs(currentFloor - ultimateStop));
 	}
 
 	public ELEVATOR_STATE getState() {
