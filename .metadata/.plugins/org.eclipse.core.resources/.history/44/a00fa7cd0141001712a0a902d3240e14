@@ -8,7 +8,6 @@ import java.util.List;
 import com.kuali.simulator.common.Constants;
 import com.kuali.simulator.common.Constants.DIRECTION;
 import com.kuali.simulator.common.Constants.ELEVATOR_STATE;
-import com.kuali.simulator.common.Constants.PASSENGER_STATE;
 import com.kuali.simulator.controller.ElevatorController;
 
 public class Elevator {
@@ -21,13 +20,11 @@ public class Elevator {
 	private HashMap<Integer, List<Passenger>> stops = new HashMap<Integer, List<Passenger>>();
 	private DIRECTION movingDirection;
 	private ELEVATOR_STATE state;
-	private ElevatorController controller;
 	
 	public Elevator (String name, int initialFloor, ElevatorController controller) throws Exception
 	{
 		this.name = name;		
 		this.currentFloor = initialFloor;
-		this.controller = controller;
 		
 		run();
 	}
@@ -52,10 +49,8 @@ public class Elevator {
 				state = ELEVATOR_STATE.LOADING;
 				
 				// TODO unload passengers
-				controller.updatePassengers(stops.get(currentFloor), PASSENGER_STATE.TRANSIT, PASSENGER_STATE.DELIVERED);
 				
 				// TODO load passengers
-				controller.updatePassengers(stops.get(currentFloor), PASSENGER_STATE.ASSIGNED, PASSENGER_STATE.TRANSIT);
 				
 				// remove the stop
 				stops.remove(currentFloor);
@@ -139,46 +134,26 @@ public class Elevator {
 		throw new Exception ("Error in finding next stop");
 	}
 	
-	public void addPassenger(int startFloor, int targetFloor, Passenger passenger) throws Exception
+	public void addPassenger(int floor, Passenger passenger) throws Exception
 	{
-		if(stops.containsKey(startFloor))
+		if(stops.containsKey(floor))
 		{
-			List<Passenger> passengers = stops.get(startFloor);
+			List<Passenger> passengers = stops.get(floor);
 			if(passenger != null) passengers.add(passenger);
 		}
 		else
 		{
 			List<Passenger> passengers = new ArrayList<Passenger>();
 			if(passenger != null) passengers.add(passenger);
-			stops.put(startFloor, passengers);
-		}
-
-		if(stops.containsKey(targetFloor))
-		{
-			List<Passenger> passengers = stops.get(targetFloor);
-			if(passenger != null) passengers.add(passenger);
-		}
-		else
-		{
-			List<Passenger> passengers = new ArrayList<Passenger>();
-			if(passenger != null) passengers.add(passenger);
-			stops.put(targetFloor, passengers);
+			stops.put(floor, passengers);
 		}
 		
-		passenger.setState(PASSENGER_STATE.ASSIGNED);
+		if(ultimateHigh == null) ultimateHigh = floor;
+		else if(ultimateHigh < floor) ultimateHigh = floor;
 		
-		if(ultimateHigh == null) ultimateHigh = startFloor;
-		else if(ultimateHigh < startFloor) ultimateHigh = startFloor;
-		
-		if(ultimateLow == null) ultimateLow = startFloor;
-		else if(ultimateLow > startFloor) ultimateLow = startFloor;
-
-		if(ultimateHigh == null) ultimateHigh = targetFloor;
-		else if(ultimateHigh < targetFloor) ultimateHigh = targetFloor;
-		
-		if(ultimateLow == null) ultimateLow = targetFloor;
-		else if(ultimateLow > targetFloor) ultimateLow = targetFloor;
-}
+		if(ultimateLow == null) ultimateLow = floor;
+		else if(ultimateLow > floor) ultimateLow = floor;
+	}
 	
 	public boolean underMaintenance()
 	{

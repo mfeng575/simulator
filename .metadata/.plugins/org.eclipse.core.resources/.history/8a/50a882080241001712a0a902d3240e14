@@ -52,11 +52,11 @@ public class ElevatorController {
 		
 	}
 	
-	public synchronized void updatePassengers(List<Passenger> passengers, PASSENGER_STATE origState, PASSENGER_STATE newState) 
+	public synchronized void updatePassengers(List<Passenger> passengers, PASSENGER_STATE newState) 
 	{
 		for(Passenger passenger : passengers)
 		{
-			if(passenger.getState() == origState) passenger.setState(newState);
+			passenger.setState(newState);
 		}
 	}
 	

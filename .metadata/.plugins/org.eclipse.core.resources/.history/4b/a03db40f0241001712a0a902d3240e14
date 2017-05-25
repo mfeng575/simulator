@@ -52,10 +52,11 @@ public class Elevator {
 				state = ELEVATOR_STATE.LOADING;
 				
 				// TODO unload passengers
-				controller.updatePassengers(stops.get(currentFloor), PASSENGER_STATE.TRANSIT, PASSENGER_STATE.DELIVERED);
+				controller.updatePassengers(stops.get(currentFloor), PASSENGER_STATE.DELIVERED);
 				
 				// TODO load passengers
-				controller.updatePassengers(stops.get(currentFloor), PASSENGER_STATE.ASSIGNED, PASSENGER_STATE.TRANSIT);
+				controller.findWaitingPassengers(currentFloor);
+				controller.updatePassengers(stops.get(currentFloor), PASSENGER_STATE.TRANSIT);
 				
 				// remove the stop
 				stops.remove(currentFloor);

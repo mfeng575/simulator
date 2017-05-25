@@ -29,13 +29,13 @@ public class ElevatorController {
 	{
 		while(true)
 		{
-			processPassengers();
+			updatePassengers();
 			
 			Thread.sleep(1000); //
 		}
 	}	
 	
-	private synchronized void processPassengers() 
+	private synchronized void updatePassengers() 
 	{
 		// TODO remove all delivered passengers
 		Iterator<Passenger> iter = passengers.iterator();
@@ -50,14 +50,6 @@ public class ElevatorController {
         
 		// TODO request stops for all waiting passengers
 		
-	}
-	
-	public synchronized void updatePassengers(List<Passenger> passengers, PASSENGER_STATE origState, PASSENGER_STATE newState) 
-	{
-		for(Passenger passenger : passengers)
-		{
-			if(passenger.getState() == origState) passenger.setState(newState);
-		}
 	}
 	
 	public void addPassenger(Passenger passenger) throws Exception
